@@ -1,3 +1,0 @@
-[submodule "backend/lib/jwt-cpp"]
-	path = backend/lib/jwt-cpp
-	url = https://github.com/Thalhammer/jwt-cpp
