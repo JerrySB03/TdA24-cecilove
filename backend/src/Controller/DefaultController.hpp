@@ -29,17 +29,9 @@ class DefaultController : public oatpp::web::server::api::ApiController {
 
         info->addResponse<Object<HelloDTO>>(Status::CODE_200, "application/json");
     }
-    ENDPOINT("GET", "/api/", apiRoot,
-             HEADER(String, userAgent, "User-Agent"),
-             HEADER(String, host, "Host"),
-             REQUEST(std::shared_ptr<IncomingRequest>, request)) {
+    ENDPOINT("GET", "/api/", apiRoot) {
         auto dto = HelloDTO::createShared();
-        dto->message = "Api GET request is working!";
-        dto->server = Header::Value::SERVER;
-        dto->userAgent = userAgent;
-        dto->host = host;
-        const auto connectionProperties = request->getConnection()->getInputStreamContext().getProperties();
-        dto->client = connectionProperties.get("peer_address");
+        dto->secret = "The cake is a lie";
         return createDtoResponse(Status::CODE_200, dto);
     }
     ENDPOINT_INFO(root) {
