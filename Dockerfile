@@ -31,9 +31,6 @@ RUN set -eux; \
 # Nginx
 COPY ./nginx/ /etc/nginx/
 
-# Start nginx
-RUN nginx
-
 EXPOSE 80
 
 ENV NODE_ENV=production
