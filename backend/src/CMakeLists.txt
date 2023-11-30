@@ -24,7 +24,6 @@ target_link_libraries(${project_name}-core
         PUBLIC oatpp::oatpp-sqlite
         PUBLIC oatpp::oatpp-swagger
         PUBLIC argon2
-        PUBLIC jwt-cpp::jwt-cpp
 )
 
 add_compile_definitions(DEFAULT_CONFIG_FOLDER="${CMAKE_CURRENT_SOURCE_DIR}/../config/")
