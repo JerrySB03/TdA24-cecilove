@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - TdA
+  pull_request:
+    branches:
+      - TdA
 
 jobs:
   build:
