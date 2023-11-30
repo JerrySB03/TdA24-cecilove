@@ -1,0 +1,13 @@
+base-image
+**/.git
+.DS_Store
+frontend/node_modules
+frontend/.svelte-kit
+frontend/package
+.env
+.env.*
+!.env.example
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+**/build
+.vscode

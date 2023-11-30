@@ -1,0 +1,21 @@
+{
+    "port": 8000,
+    "cli": false,
+    "database": {
+        "connectionString": "database.db",
+        "maxConnections": 64
+    },
+    "logs": {
+        "filePath": "/var/log/calendar.log",
+        "E": true,
+        "W": true,
+        "I": false,
+        "D": false,
+        "V": false
+    },
+    "jwt": {
+        "secret": "secret",
+        "issuer": "Cecilové",
+        "expiresIn": 2592000
+    }
+}
