@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&family=Open+Sans&display=swap');
+
+body {
+    font-family : 'Open Sans';
+}
+
+h1,
+h2,
+h3 {
+    font-family: 'Lalezar'
+}
