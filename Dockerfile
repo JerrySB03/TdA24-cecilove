@@ -1,4 +1,4 @@
-FROM jerrysb03/cecilove-base-image:0.0.2
+FROM jerrysb03/cecilove-base-image:0.0.4
 
 COPY ./ /app
 
@@ -12,20 +12,21 @@ RUN set -eux; \
     cmake -DCMAKE_BUILD_TYPE=Release ..; \
     make -j $(nproc)
 
-RUN set -eux; \
+# Start the postgresql to test the backend
+RUN su postgres -c "pg_ctl start -D /var/lib/postgresql/data -l /var/lib/postgresql/data/logfile"; \
     timeout 5s /app/backend/build/cecilsky-backend-exe --stop; \
     exitcode=$?; \
     if [ $exitcode -eq 0 ]; then echo "Backend successfully built and started"; \
     elif [ $exitcode -eq 124 ]; then echo "Backend successfully built, but failed to stop, this may be due to invalid config"; \
-    else echo "Backend failed to start"; exit 1; fi
+    else echo "Backend failed to start"; exit 1; fi ; \
+    su postgres -c "pg_ctl stop -D /var/lib/postgresql/data"
 
 COPY ./frontend /app/frontend
 
 WORKDIR /app/frontend
 
 # Build frontend
-RUN set -eux; \
-    npm install; \
+RUN npm install; \
     npm run build
 
 # Nginx
