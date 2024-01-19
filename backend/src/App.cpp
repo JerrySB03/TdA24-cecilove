@@ -6,6 +6,7 @@
 #include "AppComponent.hpp"
 #include "Config/Config.hpp"
 #include "Controller/DefaultController.hpp"
+#include "Controller/LecturerController.hpp"
 
 void cliActivation() {
     std::string input;
@@ -38,6 +39,7 @@ void run(const oatpp::base::CommandLineArguments& args) {
     oatpp::web::server::api::Endpoints docEndpoints;  // Register endpoints for API documentation (swagger-ui)
 
     router->addController(DefaultController::createShared());
+    docEndpoints.append(router->addController(LecturerController::createShared())->getEndpoints()); 
     router->addController(oatpp::swagger::Controller::createShared(docEndpoints));  // Register swagger-ui endpoint
     // create the server object
     oatpp::network::Server server(components.serverConnectionProvider.getObject(),

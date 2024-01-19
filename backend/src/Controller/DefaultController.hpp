@@ -25,25 +25,13 @@ class DefaultController : public oatpp::web::server::api::ApiController {
     }
     ENDPOINT_INFO(apiRoot) {
         info->summary = "Test API endpoint";
-        info->description = "Endpoint returning basic json data";
 
         info->addResponse<Object<HelloDTO>>(Status::CODE_200, "application/json");
     }
-    ENDPOINT("GET", "/api/", apiRoot) {
+    ENDPOINT("GET", "/", apiRoot) {
         auto dto = HelloDTO::createShared();
         dto->secret = "The cake is a lie";
         return createDtoResponse(Status::CODE_200, dto);
-    }
-    ENDPOINT_INFO(root) {
-        info->summary = "Root redirect";
-        info->description = "Root redirect endpoint to /api";
-
-        info->hide = true;
-    }
-    ENDPOINT("GET", "/", root) {
-        auto response = createResponse(Status::CODE_301, "");
-        response->putHeader("Location", "/api");
-        return response;
     }
 };
 

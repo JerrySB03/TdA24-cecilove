@@ -2,8 +2,8 @@
     "port": 8000,
     "cli": false,
     "database": {
-        "connectionString": "database.db",
-        "maxConnections": 64
+        "connectionString": "postgresql://cecil:password@localhost:5432/tda",
+        "maxConnections": 1024
     },
     "logs": {
         "filePath": "/var/log/calendar.log",
@@ -14,7 +14,6 @@
         "V": false
     },
     "jwt": {
-        "secret": "secret",
         "issuer": "Cecilové",
         "expiresIn": 2592000
     }

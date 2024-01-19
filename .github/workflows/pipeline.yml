@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - TdA
+  pull_request:
+    branches:
+      - TdA
 
 jobs:
   build:
@@ -20,7 +23,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./
-          tags: tda-cecilove.tar
+          tags: tda-cecilove:latest
           outputs: type=docker,dest=/tmp/tda-cecilove.tar
 
       - name: Upload to TdA
