@@ -12,6 +12,9 @@ Config::Config(oatpp::base::CommandLineArguments cmdArgs) {
         }
     } else {
         this->confFile.open(DEFAULT_CONFIG_FOLDER "/config.json", std::ios::out | std::ios::in);
+        if(this->confFile.fail()){
+            this->confFile.open(DEFAULT_CONFIG_FOLDER "/config.json.example", std::ios::out | std::ios::in);
+        }
     }
     if (UpdateConfig() == nullptr) {  // If the config is invalid, exit
         OATPP_LOGE("Config", "Invalid config file");
