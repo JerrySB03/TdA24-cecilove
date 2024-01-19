@@ -1,6 +1,9 @@
 #ifndef Config_hpp
 #define Config_hpp
 
+#include <openssl/rand.h>  // For generating a random secret
+
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <oatpp/core/Types.hpp>
@@ -10,9 +13,10 @@
 #include <oatpp/parser/json/mapping/ObjectMapper.hpp>
 #include <regex>
 #include <sstream>
-#include <cstdlib>
 
 #include "Dto/ConfigDto.hpp"
+
+#define DEFAULT_SECRET_LENGTH 32
 
 class Config {
    private:

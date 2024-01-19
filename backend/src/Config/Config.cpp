@@ -12,6 +12,9 @@ Config::Config(oatpp::base::CommandLineArguments cmdArgs) {
         }
     } else {
         this->confFile.open(DEFAULT_CONFIG_FOLDER "/config.json", std::ios::out | std::ios::in);
+        if(this->confFile.fail()){
+            this->confFile.open(DEFAULT_CONFIG_FOLDER "/config.json.example", std::ios::out | std::ios::in);
+        }
     }
     if (UpdateConfig() == nullptr) {  // If the config is invalid, exit
         OATPP_LOGE("Config", "Invalid config file");
@@ -47,9 +50,28 @@ oatpp::Object<ConfigDTO> Config::UpdateConfig() {
         OATPP_LOGE("Config", "JWT config is not set");
         return nullptr;
     }
-    if (newConfig->jwt->secret == nullptr) {
-        OATPP_LOGE("Config", "JWT secret is not set");
-        return nullptr;
+        if (newConfig->jwt->secret == nullptr) {
+        OATPP_LOGV("Config", "JWT secret is not set, generating a new one");
+        static const char alphanum[] =
+            "0123456789"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz"
+            "!@#$%^&*()_+-=[]{};':\",./<>?\\|`~";
+        unsigned char secret[DEFAULT_SECRET_LENGTH];
+        RAND_bytes(secret, DEFAULT_SECRET_LENGTH);
+        for (int i = 0; i < DEFAULT_SECRET_LENGTH; i++) {
+            secret[i] = alphanum[secret[i] % 94];
+        }
+        newConfig->jwt->secret = oatpp::String((const char*)secret, DEFAULT_SECRET_LENGTH);
+
+        // Save the new secret to the config file
+        auto objectMapper = oatpp::parser::json::mapping::ObjectMapper::createShared();
+        objectMapper->getSerializer()->getConfig()->useBeautifier = true;
+        objectMapper->getSerializer()->getConfig()->includeNullFields = false;
+        std::string configString = objectMapper->writeToString(newConfig);
+        this->confFile.seekp(0);
+        this->confFile << configString;
+        this->confFile.flush();
     }
     if (newConfig->jwt->issuer == nullptr) {
         OATPP_LOGE("Config", "JWT issuer is not set");
@@ -99,15 +121,16 @@ oatpp::Object<ConfigDTO> Config::UpdateConfig() {
      * Database
      */
 
-    auto envDatabaseConnectionString = std::getenv("DATABASE_CONNECTION");  // For docker configuration
+    auto envDatabaseConnectionString = std::getenv("DATABASE_URL");  // For docker configuration
     if (envDatabaseConnectionString == nullptr) {
-        if (newConfig->database->connectionString->c_str()[0] == '/') {
-            this->databaseConnectionString = newConfig->database->connectionString;
-        } else {
-            this->databaseConnectionString = newConfig->baseFolder + newConfig->database->connectionString;
-        }
+        this->databaseConnectionString = newConfig->database->connectionString;
     } else {
         this->databaseConnectionString = envDatabaseConnectionString;
+    }
+    std::regex databaseConnectionStringRegex("^postgresql:\\/\\/([^:]+):([^@]+)@([^:]+):(\\d+)\\/([^?]+)(\\?.+)?$");
+    if (!std::regex_search(newConfig->database->connectionString->c_str(), databaseConnectionStringRegex)) {
+        OATPP_LOGE("Config", "Invalid database connection string %s", newConfig->database->connectionString->c_str());
+        return nullptr;
     }
 
     if (newConfig->database->migrationPath == nullptr) {

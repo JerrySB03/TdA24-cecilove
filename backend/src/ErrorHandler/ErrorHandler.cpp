@@ -12,7 +12,7 @@ ErrorHandler::handleError(const Status &status, const oatpp::String &message, co
     error->message = message;
 
     if (outStatus.code >= 500) {
-        OATPP_LOGE("HTTP Code " + std::to_string(status.code), message->c_str());  // Log the error
+        OATPP_LOGE("HTTP Code " + std::to_string(status.code), "%s",message->c_str());  // Log the error
         if (error->message->find("DATABASE-ERROR") != std::string::npos) {
             if (error->message->find("duplicate key") != std::string::npos) {
                 outStatus.code = 409;
@@ -30,7 +30,7 @@ ErrorHandler::handleError(const Status &status, const oatpp::String &message, co
             error->message = "Internal server error";
         }
     } else {
-        OATPP_LOGD("HTTP Code " + std::to_string(status.code), message->c_str());  // Log the error
+        OATPP_LOGD("HTTP Code " + std::to_string(status.code), "%s", message->c_str());  // Log the error
         if (error->status == nullptr) {
             error->status = "Error";
         }
